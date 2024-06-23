@@ -8,6 +8,7 @@ import 'package:object_detector_lele/page/camera.dart';
 import 'package:object_detector_lele/page/riwayat_page.dart';
 import 'package:object_detector_lele/page/setting_harga.dart';
 
+
 void main() {
   runApp(const MyApp());
 }

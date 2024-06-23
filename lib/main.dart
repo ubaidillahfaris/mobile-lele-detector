@@ -130,6 +130,10 @@ class _HomeWidgetState extends State<HomeWidget> {
           children: [
             Stack(
               children: [
+                Image.asset(
+                  'assets/images/catfish.png',
+                  width: width * 0.7,
+                ),
                 Container(
                   height: height * 0.08,
                   decoration: BoxDecoration( 
@@ -190,7 +194,6 @@ class _HomeWidgetState extends State<HomeWidget> {
               child: Padding(
                 padding: EdgeInsets.all(width * 0.10),
                 child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: width * 0.03,

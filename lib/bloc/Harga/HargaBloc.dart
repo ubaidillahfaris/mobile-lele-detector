@@ -8,7 +8,9 @@ part 'harga_event.dart';
 class HargaBloc extends Bloc<HargaEvent, HargaState>{
   HargaBloc() :super(InitHargaState()){
     on<FetchHargaEvent>(fectHargaHandler);
+    on<CreateHargaEvent>(createHargaHanlder);
     on<UpdateHargaEvent>(updateHargaHandler);
+    on<DeleteHargaEvent>(deleteHargaHandler);
   }
 
   void fectHargaHandler(FetchHargaEvent event, Emitter<HargaState> emit) async{
@@ -28,6 +30,30 @@ class HargaBloc extends Bloc<HargaEvent, HargaState>{
       emit(SuccessFetchHarga(data: data));
     } catch (e) {
       emit(FailFetchHarga());
+    }
+  }
+
+  void createHargaHanlder(CreateHargaEvent event, Emitter<HargaState> emit) async{
+    emit(OnLoadingProcess());
+    Dio dio = Dio();
+
+    var data = FormData.fromMap({
+      'grade' : event.grade,
+      'harga' : event.harga
+    });
+
+    try {
+      var request = await dio.request(
+        '${ConfigApp.baseUrl}/harga/create',
+        options: Options(
+          method: 'POST',
+        ),
+        data: data
+      );
+      Map<String, dynamic> response = request.data;
+      emit(SuccessCreateHarga());
+    } catch (e) {
+      emit(FailCreateHarga());
     }
   }
 
@@ -55,7 +81,26 @@ class HargaBloc extends Bloc<HargaEvent, HargaState>{
       emit(SuccessUpdateHarga());
 
     } catch (e) {
-      throw e;
+      emit(FailUpdateHarga());
+    }
+  }
+
+  void deleteHargaHandler(DeleteHargaEvent event, Emitter<HargaState> emit) async{
+
+    Dio dio = Dio();
+    int id = event.id;
+
+    try {
+       var request = await dio.request(
+        '${ConfigApp.baseUrl}/harga/delete/${id}',
+        options: Options(
+          method: 'DELETE',
+        )
+      );
+      emit(SuccessDeleteHarga());
+
+    } catch (e) {
+      emit(FailDeleteHarga());
     }
   }
 

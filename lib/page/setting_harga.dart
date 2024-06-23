@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:object_detector_lele/bloc/Harga/HargaBloc.dart';
 import 'package:object_detector_lele/config.dart';
 import 'package:object_detector_lele/model/Harga.dart';
+import 'package:object_detector_lele/page/add_harga.dart';
 import 'package:object_detector_lele/page/edit_harga.dart';
 
 class SettingHargaPage extends StatefulWidget {
@@ -37,6 +38,7 @@ class _SettingHargaPageState extends State<SettingHargaPage> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
+
   
     return Scaffold(
       appBar: AppBar( 
@@ -49,6 +51,9 @@ class _SettingHargaPageState extends State<SettingHargaPage> {
           listener: (context, state) {
             if (state is SuccessFetchHarga) {
               listHarga = state.data;
+            }
+            if (state is SuccessDeleteHarga) {
+              hargaBloc.add(FetchHargaEvent());
             }
           },
           child: BlocBuilder<HargaBloc, HargaState>(
@@ -82,6 +87,36 @@ class _SettingHargaPageState extends State<SettingHargaPage> {
                                   hargaBloc.add(FetchHargaEvent());
                                 }
                               });
+                            },
+                            onLongPress: () {
+                              
+                              showModalBottomSheet(
+                                useRootNavigator: true,
+                                elevation: 2,
+                                context: context, 
+                                builder: (context) {
+                                  return Container(
+                                    height: height * 0.20,
+                                    child: Center( 
+                                      child: Container(
+                                        padding: EdgeInsets.all(width * 0.05),
+                                        width: width,
+                                        child: FilledButton.icon(
+                                          style: ButtonStyle( 
+                                            backgroundColor: WidgetStatePropertyAll(ConfigApp.colors['secondary'])
+                                          ),
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () {
+                                            hargaBloc.add(DeleteHargaEvent(id: item.id));
+                                            Navigator.pop(context);
+                                          },
+                                          label: Text('Hapus')
+                                        ),
+                                      ),
+                                    ),
+                                  );  
+                                },
+                              );
                             },
                             child: Container(
                               width: width,
@@ -152,6 +187,22 @@ class _SettingHargaPageState extends State<SettingHargaPage> {
             },
           ),
         ),
+      ),
+      floatingActionButton:FloatingActionButton(
+        backgroundColor: ConfigApp.colors['secondary'],
+        child: Icon(Icons.add_circle_outlined, color: Colors.white,),
+        onPressed: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => AddHargaPage(),
+            )
+          ).then((result) {
+            if (result == true) {
+              hargaBloc.add(FetchHargaEvent());
+            }
+          });
+        },
       ),
     );
   }

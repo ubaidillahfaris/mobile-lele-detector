@@ -5,6 +5,7 @@ import 'package:object_detector_lele/bloc/Lele/LeleBloc.dart';
 import 'package:object_detector_lele/bloc/camera/CameraBloc.dart';
 import 'package:object_detector_lele/config.dart';
 import 'package:object_detector_lele/page/camera.dart';
+import 'package:object_detector_lele/page/informasi.dart';
 import 'package:object_detector_lele/page/riwayat_page.dart';
 import 'package:object_detector_lele/page/setting_harga.dart';
 
@@ -118,6 +119,21 @@ class _HomeWidgetState extends State<HomeWidget> {
           );
         },
       ),
+      MenuCard(
+        width: width,
+        label: 'Informasi',
+        image_path: 'assets/images/info.png',
+        ontap: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) {
+                  return InformasiPage();
+              },
+            )
+          );
+        },
+      ),
     ];
 
     return Scaffold(
@@ -131,10 +147,6 @@ class _HomeWidgetState extends State<HomeWidget> {
           children: [
             Stack(
               children: [
-                Image.asset(
-                  'assets/images/catfish.png',
-                  width: width * 0.7,
-                ),
                 Container(
                   height: height * 0.08,
                   decoration: BoxDecoration( 
@@ -192,18 +204,30 @@ class _HomeWidgetState extends State<HomeWidget> {
               ],
             ),
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(width * 0.10),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: width * 0.03,
-                    crossAxisSpacing: width * 0.03
-                  ), 
-                  itemBuilder: (context, index) {
-                    return menuList[index];
-                  },
-                  itemCount: menuList.length,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(width * 0.10),
+                  child: Column(
+                    children: [
+                       Image.asset(
+                        'assets/images/catfish.png',
+                        width: width * 0.5,
+                      ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: width * 0.03,
+                          crossAxisSpacing: width * 0.03
+                        ), 
+                        itemBuilder: (context, index) {
+                          return menuList[index];
+                        },
+                        itemCount: menuList.length,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

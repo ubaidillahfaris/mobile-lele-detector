@@ -159,13 +159,82 @@ class _SettingHargaPageState extends State<SettingHargaPage> {
                                             ),
                                           ],
                                         ),
-                                        Text(
-                                          'Rp. ${item.harga}',
-                                          style: TextStyle(
-                                            color: Colors.grey.shade800,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold
-                                          ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Rp. ${item.harga}',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade800,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold
+                                              ),
+                                            ),
+                                            SizedBox(width: width * 0.05,),
+                                            Container( 
+                                                decoration: BoxDecoration( 
+                                                  color: Colors.blue,
+                                                  borderRadius: BorderRadius.circular(8)
+                                                ),
+                                                padding: EdgeInsets.all(8),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(Icons.edit,color: Colors.white,),
+                                                    Text('Edit',style: TextStyle(color: Colors.white),)
+                                                  ],
+                                                ),
+                                            ),
+                                            SizedBox(width: width * 0.05,),
+                                            InkWell(
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context, 
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      content: Text('Apakah ingin menghapus data?', style: Theme.of(context).textTheme.titleLarge,),
+                                                      actions: [ 
+                                                        FilledButton(
+                                                          style: ButtonStyle( 
+                                                            backgroundColor: WidgetStatePropertyAll(Colors.red.shade600)
+                                                          ),
+                                                          onPressed: () {
+                                                            hargaBloc.add(DeleteHargaEvent(id: item.id));
+                                                            Navigator.of(context).pop();
+                                                            
+                                                          }, 
+                                                          child: Text('Hapus data')
+                                                        ),
+                                                        FilledButton(
+                                                          style: ButtonStyle( 
+                                                            backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                                                            side: WidgetStatePropertyAll(BorderSide(
+                                                                color: Colors.grey,
+                                                                width: 1.0,
+                                                                style: BorderStyle.solid
+                                                                )
+                                                              )
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop();
+                                                          }, 
+                                                          child: Text('Batal', style: TextStyle(
+                                                            color: Colors.grey
+                                                          ),)
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: Container( 
+                                                decoration: BoxDecoration( 
+                                                  color: Colors.red.shade600,
+                                                  borderRadius: BorderRadius.circular(8)
+                                                ),
+                                                padding: EdgeInsets.all(8),
+                                                child: Icon(Icons.delete,color: Colors.white,),
+                                              ),
+                                            )
+                                          ],
                                         )
                                       ],
                                     ),

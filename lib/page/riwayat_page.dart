@@ -73,6 +73,9 @@ class _DataListState extends State<DataList> {
             if (state is SuccessFetchLeleData) {
               data = state.data;
             }
+            if (state is SuccessDeleteData) {
+              widget.leleBloc.add(FetchDataLele());
+            }
           },
           child: BlocBuilder<LeleBloc, LeleState>(
               builder: (context, state) {
@@ -155,7 +158,57 @@ class _DataListState extends State<DataList> {
                                     ),
                                     Center( 
                                       child: Text('${item.jumlah} Lele'),
-                                    )
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context, 
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              content: Text('Apakah ingin menghapus data?', style: Theme.of(context).textTheme.titleLarge,),
+                                              actions: [ 
+                                                FilledButton(
+                                                  style: ButtonStyle( 
+                                                    backgroundColor: WidgetStatePropertyAll(Colors.red.shade600)
+                                                  ),
+                                                  onPressed: () {
+                                                    widget.leleBloc.add(DeleteRiwayat(id: item.id));
+                                                    Navigator.of(context).pop();
+                                                    
+                                                  }, 
+                                                  child: Text('Hapus data')
+                                                ),
+                                                FilledButton(
+                                                  style: ButtonStyle( 
+                                                    backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                                                    side: WidgetStatePropertyAll(BorderSide(
+                                                        color: Colors.grey,
+                                                        width: 1.0,
+                                                        style: BorderStyle.solid
+                                                        )
+                                                      )
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  }, 
+                                                  child: Text('Batal', style: TextStyle(
+                                                    color: Colors.grey
+                                                  ),)
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Container( 
+                                        decoration: BoxDecoration( 
+                                          color: Colors.red.shade600,
+                                          borderRadius: BorderRadius.circular(8)
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                        child: Icon(Icons.delete,color: Colors.white,),
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 Divider(),

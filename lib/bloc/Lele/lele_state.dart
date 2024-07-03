@@ -11,3 +11,6 @@ class SuccessFetchLeleData implements LeleState{
 class ErrorFetchLeleData implements LeleState{
   final String response = 'Gagal mendapatkan data';
 }
+
+class SuccessDeleteData implements LeleState{}
+class FailDeleteData implements LeleState{}

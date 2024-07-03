@@ -27,7 +27,45 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomeWidget(),
+      home: const FirstPage(),
+    );
+  }
+}
+
+
+class FirstPage extends StatelessWidget {
+  const FirstPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center( 
+        child: Column( 
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Peternakan Lele', style: Theme.of(context).textTheme.titleLarge,),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02,),
+
+             Image.asset(
+              'assets/images/catfish.png',
+              width: MediaQuery.of(context).size.width * 0.7,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02,),
+            
+            FilledButton(
+              onPressed: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (context) => HomeWidget(),
+                  )
+                );
+              },
+              child: Text('Start App')
+            )
+          ],
+        ),
+      ),
     );
   }
 }

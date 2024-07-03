@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ConfigApp{
 
-  static String baseUrl = 'http://192.168.18.168:8000';
+  static String baseUrl = 'http://192.168.18.106:8000';
 
   static Map<String, Color> colors = {
     'primary' : Color(0xFF0583F2),

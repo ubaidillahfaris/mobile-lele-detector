@@ -8,6 +8,7 @@ part 'lele_event.dart';
 class LeleBloc extends Bloc<LeleEvent, LeleState>{
   LeleBloc(): super(LeleInitState()){
     on<FetchDataLele>(_fetchDataLeleHandler);
+    on<DeleteRiwayat>(_deleteRiwayat);
   }
 
   void _fetchDataLeleHandler(FetchDataLele event, Emitter<LeleState> emit) async{
@@ -21,6 +22,17 @@ class LeleBloc extends Bloc<LeleEvent, LeleState>{
       emit(SuccessFetchLeleData(data: response));
     } catch (e) {
       emit(ErrorFetchLeleData());
+    }
+  }
+
+  void _deleteRiwayat(DeleteRiwayat event, Emitter<LeleState> emit) async{
+    try {
+      Dio dio = Dio();
+      await dio.delete('${ConfigApp.baseUrl}/perhitungan/delete/${event.id}');
+      emit(SuccessDeleteData());
+    } catch (e) {
+      emit(FailDeleteData());
+      
     }
   }
 }

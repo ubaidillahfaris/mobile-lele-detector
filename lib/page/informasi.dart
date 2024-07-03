@@ -9,7 +9,7 @@ class InformasiPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar( 
         backgroundColor: ConfigApp.colors['primary'],
-        title: Text('Informasi Aplikasi88l;]', style: TextStyle(color: Colors.white),),
+        title: Text('Informasi Aplikasi', style: TextStyle(color: Colors.white),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(64),

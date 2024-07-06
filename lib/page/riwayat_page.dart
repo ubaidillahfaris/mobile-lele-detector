@@ -117,6 +117,7 @@ class _DataListState extends State<DataList> {
                                       children: [
                                         InkWell(
                                           onTap: () {
+                                            print(item.video_url);
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(

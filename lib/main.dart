@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:object_detector_lele/Helper/SharedPreferencesHelper.dart';
 import 'package:object_detector_lele/bloc/Lele/LeleBloc.dart';
 import 'package:object_detector_lele/bloc/camera/CameraBloc.dart';
 import 'package:object_detector_lele/config.dart';
@@ -33,8 +34,18 @@ class MyApp extends StatelessWidget {
 }
 
 
-class FirstPage extends StatelessWidget {
+class FirstPage extends StatefulWidget {
+
+
   const FirstPage({super.key});
+
+  @override
+  State<FirstPage> createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<FirstPage> {
+
+  TextEditingController ipController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +63,29 @@ class FirstPage extends StatelessWidget {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02,),
             
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: TextField(
+                controller: ipController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'alamat ip server',
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02,),
+            
             FilledButton(
-              onPressed: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(
-                    builder: (context) => HomeWidget(),
-                  )
-                );
+              onPressed: () async {
+                 String newBaseUrl = ipController.text;
+                await SharedPreferencesHelper.saveBaseUrl(newBaseUrl);
+                  // Update baseUrl in Config
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => HomeWidget(),
+                    )
+                  );
               },
               child: Text('Start App')
             )

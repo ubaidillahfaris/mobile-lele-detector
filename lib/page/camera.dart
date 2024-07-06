@@ -162,10 +162,12 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
 
   // upload video to api
   Future<void> sendVideo(String filePath, [bool fromStorage = false]) async {
+  String baseUrl = await ConfigApp.baseUrl()??'';
   if (fromStorage == false) {
+
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('${ConfigApp.baseUrl}/process_video'),
+      Uri.parse('${baseUrl}/process_video'),
     );
 
     final file = File(filePath);
@@ -199,7 +201,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
 
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('${ConfigApp.baseUrl}/process_video'),
+      Uri.parse('${baseUrl}/process_video'),
     );
 
     final file = File(filePath);

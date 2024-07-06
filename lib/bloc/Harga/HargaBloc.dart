@@ -18,8 +18,11 @@ class HargaBloc extends Bloc<HargaEvent, HargaState>{
     Dio dio = Dio();
 
     try {
+
+      String baseUrl = await ConfigApp?.baseUrl()??'';
+
       var request = await dio.get(
-        '${ConfigApp.baseUrl}/harga/show'
+        '${baseUrl}/harga/show'
       );
 
       List<dynamic> response = request.data;
@@ -43,8 +46,11 @@ class HargaBloc extends Bloc<HargaEvent, HargaState>{
     });
 
     try {
+
+      String baseUrl = await ConfigApp?.baseUrl()??'';
+
       var request = await dio.request(
-        '${ConfigApp.baseUrl}/harga/create',
+        '${baseUrl}/harga/create',
         options: Options(
           method: 'POST',
         ),
@@ -68,9 +74,12 @@ class HargaBloc extends Bloc<HargaEvent, HargaState>{
     });
 
     try {
+
+      String baseUrl = await ConfigApp?.baseUrl()??'';
+
       
       var request = await dio.request(
-        '${ConfigApp.baseUrl}/harga/update/${id}',
+        '${baseUrl}/harga/update/${id}',
         options: Options(
           method: 'PUT',
         ),
@@ -91,8 +100,9 @@ class HargaBloc extends Bloc<HargaEvent, HargaState>{
     int id = event.id;
 
     try {
+      String baseUrl = await ConfigApp?.baseUrl()??'';
        var request = await dio.request(
-        '${ConfigApp.baseUrl}/harga/delete/${id}',
+        '${baseUrl}/harga/delete/${id}',
         options: Options(
           method: 'DELETE',
         )

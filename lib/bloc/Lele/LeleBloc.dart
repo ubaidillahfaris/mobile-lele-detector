@@ -13,8 +13,10 @@ class LeleBloc extends Bloc<LeleEvent, LeleState>{
 
   void _fetchDataLeleHandler(FetchDataLele event, Emitter<LeleState> emit) async{
     try {
+      String baseUrl = await ConfigApp?.baseUrl()??'';
+
       Dio dio = Dio();
-      var request = await dio.get('${ConfigApp.baseUrl}/perhitungan/show');
+      var request = await dio.get('${baseUrl}/perhitungan/show');
       List<LeleModel> response = request.data.map<LeleModel>((item) {
         return LeleModel.fromJson(item);
       }).toList();
@@ -28,7 +30,8 @@ class LeleBloc extends Bloc<LeleEvent, LeleState>{
   void _deleteRiwayat(DeleteRiwayat event, Emitter<LeleState> emit) async{
     try {
       Dio dio = Dio();
-      await dio.delete('${ConfigApp.baseUrl}/perhitungan/delete/${event.id}');
+      String baseUrl = await ConfigApp?.baseUrl()??'';
+      await dio.delete('${baseUrl}/perhitungan/delete/${event.id}');
       emit(SuccessDeleteData());
     } catch (e) {
       emit(FailDeleteData());

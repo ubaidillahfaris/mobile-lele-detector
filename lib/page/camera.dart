@@ -162,73 +162,80 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
 
   // upload video to api
   Future<void> sendVideo(String filePath, [bool fromStorage = false]) async {
-  String baseUrl = await ConfigApp.baseUrl()??'';
-  if (fromStorage == false) {
+    String baseUrl = await ConfigApp.baseUrl()??'';
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse('${baseUrl}/process_video'),
-    );
+    try {
+      
+          if (fromStorage == false) {
 
-    final file = File(filePath);
-    final length = await file.length();
+            var request = http.MultipartRequest(
+              'POST',
+              Uri.parse('${baseUrl}/process_video'),
+            );
 
-    if (length == 0) {
-      print('Error: File size is zero bytes');
-      return;
-    } else {
-      print('File size: $length bytes');
+            final file = File(filePath);
+            final length = await file.length();
+
+            if (length == 0) {
+              print('Error: File size is zero bytes');
+              return;
+            } else {
+              print('File size: $length bytes');
+            }
+
+            request.files.add(
+              await http.MultipartFile.fromPath('file', filePath),
+            );
+
+            var response = await request.send();
+            if (response.statusCode == 200) {
+              print('Video sent successfully');
+            } else {
+              print('Failed to send video: ${response.statusCode}');
+            }
+
+            File temporaryFile = File(filePath);
+            await temporaryFile.delete();
+
+          } else {
+            setState(() {
+              isLoading = true;
+            });
+
+            var request = http.MultipartRequest(
+              'POST',
+              Uri.parse('${baseUrl}/process_video'),
+            );
+
+            final file = File(filePath);
+            final length = await file.length();
+
+            if (length == 0) {
+              print('Error: File size is zero bytes');
+              return;
+            } else {
+              print('File size: $length bytes');
+            }
+
+            request.files.add(
+              await http.MultipartFile.fromPath('file', filePath),
+            );
+
+            var response = await request.send().then((result) {
+              Navigator.pop(context);
+            });
+
+            if (response.statusCode == 200) {
+              print('Video sent successfully');
+            } else {
+              print('Failed to send video: ${response.statusCode}');
+            }
+          }
+    } catch (e) {
+      throw e;
     }
-
-    request.files.add(
-      await http.MultipartFile.fromPath('file', filePath),
-    );
-
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      print('Video sent successfully');
-    } else {
-      print('Failed to send video: ${response.statusCode}');
-    }
-
-    File temporaryFile = File(filePath);
-    await temporaryFile.delete();
-
-  } else {
-    setState(() {
-      isLoading = true;
-    });
-
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse('${baseUrl}/process_video'),
-    );
-
-    final file = File(filePath);
-    final length = await file.length();
-
-    if (length == 0) {
-      print('Error: File size is zero bytes');
-      return;
-    } else {
-      print('File size: $length bytes');
-    }
-
-    request.files.add(
-      await http.MultipartFile.fromPath('file', filePath),
-    );
-
-    var response = await request.send().then((result) {
-      Navigator.pop(context);
-    });
-
-    if (response.statusCode == 200) {
-      print('Video sent successfully');
-    } else {
-      print('Failed to send video: ${response.statusCode}');
-    }
+  
   }
-}
 
   @override
   Widget build(BuildContext context) {

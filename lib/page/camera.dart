@@ -13,6 +13,12 @@ import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
 
 class VideoStreamPage extends StatefulWidget {
+  CameraController cameraController;
+
+  VideoStreamPage({
+    required this.cameraController
+  });
+
   @override
   _VideoStreamPageState createState() => _VideoStreamPageState();
 }
@@ -24,7 +30,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
   bool isFrontCamera = true;
   bool isStreaming = false;
   bool? isLoading = false;
-  CameraController? _cameraController;
+  late CameraController _cameraController;
   String? _videoPath;
   Timer? _streamingTimer;
   XFile? videoFile;
@@ -33,6 +39,9 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
   @override
   void initState() {
     super.initState();
+    _cameraController = widget.cameraController;
+              setState(() { });
+
   }
 
   @override
@@ -43,9 +52,6 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
     }
     if (isStreaming == true) {
       stopVideoRecording();
-    }
-    if (_cameraController != null) {
-      _cameraController?.dispose();
     }
   }
   
@@ -73,27 +79,20 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
   }
 
     void onVideoRecordButtonPressed() {
-      startVideoRecording().then((_) {
-        if (mounted) {
-         setState(() {
-            
-          });
-        }
-      });
+      startVideoRecording().then((_) {});
     }
 
 
     Future<void> startVideoRecording() async {
+      print('start recording');
+       if (mounted) {
+         setState(() { });
+      }
 
       final CameraController? cameraController = _cameraController;
 
       if (cameraController == null || !cameraController.value.isInitialized) {
         print('Error: select a camera first.');
-        return;
-      }
-
-      if (cameraController.value.isRecordingVideo) {
-        // A recording is already started, do nothing.
         return;
       }
 
@@ -178,7 +177,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
 
             if (length == 0) {
               print('Error: File size is zero bytes');
-              return;
+              setState(() { });
             } else {
               print('File size: $length bytes');
             }
@@ -198,6 +197,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
             await temporaryFile.delete();
 
           } else {
+
             setState(() {
               isLoading = true;
             });
@@ -221,9 +221,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
               await http.MultipartFile.fromPath('file', filePath),
             );
 
-            var response = await request.send().then((result) {
-              Navigator.pop(context);
-            });
+            var response = await request.send();
 
             if (response.statusCode == 200) {
               print('Video sent successfully');
@@ -309,7 +307,7 @@ class _VideoStreamPageState extends State<VideoStreamPage> {
                           backgroundColor: WidgetStatePropertyAll(
                               Colors.grey.shade400)),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.of(context).pop();
                       },
                       child: Icon(
                         Icons.stop,

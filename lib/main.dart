@@ -46,6 +46,14 @@ class FirstPage extends StatefulWidget {
 class _FirstPageState extends State<FirstPage> {
 
   TextEditingController ipController = TextEditingController();
+  
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,9 +115,13 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
 
   CameraBloc cameraBloc = CameraBloc();
-  CameraController? cameraController;
-  List<CameraDescription>? cameras;
+  CameraController? _cameraController;
+  late List<CameraDescription> cameras;
   LeleBloc leleBloc = LeleBloc();
+
+  
+
+
 
   
   @override
@@ -120,15 +132,22 @@ class _HomeWidgetState extends State<HomeWidget> {
     leleBloc.add(FetchDataLele());
   }
 
-  void availableCameraHandler() async {
+    void availableCameraHandler() async {
     cameras = await availableCameras();
+    final firstCamera = cameras.first;
+    _cameraController = CameraController(firstCamera, ResolutionPreset.high);
+    await _cameraController!.initialize().then((_){
+      print('cameras available');
+    });
+
+    if (mounted) {
+        setState(() { });
+    }
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    cameraController!.dispose();
   }
 
   @override
@@ -143,14 +162,17 @@ class _HomeWidgetState extends State<HomeWidget> {
         label: 'Penyortiran',
         image_path: 'assets/images/filters.png',
         ontap: () {
-          Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) {
-                  return VideoStreamPage();
-              },
-            )
-          );
+            Navigator.push(
+              context, 
+              MaterialPageRoute(
+                builder: (context) {
+                    return VideoStreamPage(
+                      cameraController: _cameraController!,
+                    );
+                },
+              )
+            );
+          
         },
       ),
       MenuCard(

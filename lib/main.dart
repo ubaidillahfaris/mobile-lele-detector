@@ -135,7 +135,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     void availableCameraHandler() async {
     cameras = await availableCameras();
     final firstCamera = cameras.first;
-    _cameraController = CameraController(firstCamera, ResolutionPreset.high);
+    _cameraController = CameraController(firstCamera, ResolutionPreset.medium);
     await _cameraController!.initialize().then((_){
       print('cameras available');
     });

@@ -89,8 +89,8 @@ class _DataListState extends State<DataList> {
                     itemBuilder: (context, index) {
                       if (data != null) {
                         LeleModel item = data![index];
-                        DateTime date = DateFormat("EEE, dd MMM yyyy").parse(item.tanggal);
-                        String formattedDate = DateFormat("EEE, dd MMM yyyy").format(date);
+                        DateTime date = DateFormat("EEE, dd MMM yyyy HH:mm").parse(item.created_at);
+                        String formattedDate = DateFormat("EEE, dd MMM yyyy HH:mm").format(date);
                         return Container(
                           margin: EdgeInsets.only(bottom: widget.height * 0.02),
                           decoration: BoxDecoration( 
@@ -123,6 +123,7 @@ class _DataListState extends State<DataList> {
                                               MaterialPageRoute(
                                                 builder: (context) => VideoPlayerWidget(
                                                   video_url: item.video_url,
+                                                  video_url_knn: item.video_url_knn,
                                                 ),
                                               )
                                             );

@@ -4,34 +4,59 @@ import 'package:video_player/video_player.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final String video_url;
+  final String? video_url_knn;
+
   const VideoPlayerWidget({
     Key? key,
-    required this.video_url
+    required this.video_url,
+    this.video_url_knn,
   }) : super(key: key);
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
 }
 
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> with TickerProviderStateMixin{
   late VideoPlayerController controller;
+  late VideoPlayerController? controllerKnn;
+  late final TabController tabController;
   late bool videoStatus;
   late bool canLoadVideo;
+
+
   @override
   void initState() {
     super.initState();
-    
+    tabController = TabController(length: 2, vsync: this);
    try {
      controller = VideoPlayerController.networkUrl(
-      Uri.parse(widget.video_url)
-    );
+        Uri.parse(widget.video_url)
+      );
+
+
+      controllerKnn = widget.video_url_knn != 'None' ? VideoPlayerController.networkUrl(Uri.parse(widget.video_url_knn!)) : null;
   
-    controller.addListener(() {
-      setState(() {});
-    });
+      controller.addListener(() {
+        setState(() {});
+      });
+      
       controller.setLooping(false);
       controller.initialize().then((_) => setState(() {}));
       controller.play();
+
+      if (controllerKnn != null) {
+        controllerKnn!.addListener(() {
+          setState(() {});
+        });
+        
+        controllerKnn!.setLooping(false);
+        controllerKnn!.initialize().then((_) => setState(() {}));
+        controllerKnn!.play();
+        
+      }
+
+
+
       videoStatus = true;
       canLoadVideo = true;
    } catch (e) {
@@ -45,6 +70,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void dispose() {
     controller.dispose();
     super.dispose();
+    tabController.dispose();
   }
 
   @override
@@ -55,105 +81,179 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       appBar: AppBar(),
       body:Column(
         children: [
-          if(canLoadVideo == true)...{
-
-            Stack(
-              children: [ 
-                Container(
-                  width: width,
-                  height: height * 0.5,
-                  child: AspectRatio(
-                    aspectRatio: controller.value.aspectRatio,
-                    child: VideoPlayer(controller),
+          TabBar(
+                controller: tabController,
+                tabs: <Widget>[
+                  Tab(
+                     text: 'Yolo',
                   ),
-                ),
-                if(videoStatus == false) ...{
-                  Container(
-                    width: width,
-                    height: height * 0.5,
-                    color: Colors.black.withOpacity(0.5),
-                    child: Center(
-                      child: Text(
-                        'Paused',
-                        style: TextStyle( 
-                          color: Colors.white,
-                          fontSize: 24
-                        ),
+                  Tab(
+                    text: 'KNN',
+                  ),
+                ],
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: tabController,
+              children: <Widget>[
+                Column(
+                  children: [
+                    if(canLoadVideo == true)...{
+                
+                      Stack(
+                        children: [ 
+                          Container(
+                            width: width,
+                            height: height * 0.5,
+                            child: AspectRatio(
+                              aspectRatio: controller.value.aspectRatio,
+                              child: VideoPlayer(controller),
+                            ),
+                          ),
+                          if(videoStatus == false) ...{
+                            Container(
+                              width: width,
+                              height: height * 0.5,
+                              color: Colors.black.withOpacity(0.5),
+                              child: Center(
+                                child: Text(
+                                  'Paused',
+                                  style: TextStyle( 
+                                    color: Colors.white,
+                                    fontSize: 24
+                                  ),
+                                ),
+                              ),
+                            )
+                          }
+                        ],
                       ),
-                    ),
-                  )
-                }
+                      Container(
+                        margin: EdgeInsets.only(top: height * 0.03),
+                        child: Row( 
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [ 
+                
+                            if(videoStatus == false)...{
+                
+                              InkWell(
+                                onTap:  (){
+                                  controller.play();
+                                  setState(() {
+                                    videoStatus = true;
+                                  });
+                                }, 
+                                child: Container( 
+                                  child: Icon(
+                                    Icons.play_circle_fill,
+                                    color: Colors.black,
+                                    size: 56,
+                                  ),
+                                ),
+                              ),
+                            },
+                            if(videoStatus == true)...{
+                
+                              InkWell(
+                                onTap:  (){
+                                  controller.pause();
+                                  setState(() {
+                                    videoStatus = false;
+                                  });
+                                }, 
+                                child: Container( 
+                                  child: Icon(
+                                    Icons.pause,
+                                    color: Colors.grey.shade500,
+                                    size: 56,
+                                  ),
+                                ),
+                              ),
+                            }
+                
+                          ],
+                        ),
+                      )
+                    },
+                    if(canLoadVideo == false)...{
+                      Center(
+                        child: Text('Video Error'),
+                      )
+                    }
+                  ],
+                ),
+                Column( 
+                 children: [ 
+
+                  if(controllerKnn != null)...{
+                    Column(
+                      children: [ 
+                        Container(
+                          width: width,
+                          height: height * 0.5,
+                          child: AspectRatio(
+                            aspectRatio: controllerKnn!.value.aspectRatio,
+                            child: VideoPlayer(controllerKnn!),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: height * 0.03),
+                          child: Row( 
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [ 
+                  
+                              if(videoStatus == false)...{
+                  
+                                InkWell(
+                                  onTap:  (){
+                                    controllerKnn!.play();
+                                    setState(() {
+                                      videoStatus = true;
+                                    });
+                                  }, 
+                                  child: Container( 
+                                    child: Icon(
+                                      Icons.play_circle_fill,
+                                      color: Colors.black,
+                                      size: 56,
+                                    ),
+                                  ),
+                                ),
+                              },
+                              if(videoStatus == true)...{
+                  
+                                InkWell(
+                                  onTap:  (){
+                                    controllerKnn!.pause();
+                                    setState(() {
+                                      videoStatus = false;
+                                    });
+                                  }, 
+                                  child: Container( 
+                                    child: Icon(
+                                      Icons.pause,
+                                      color: Colors.grey.shade500,
+                                      size: 56,
+                                    ),
+                                  ),
+                                ),
+                              }
+                  
+                            ],
+                          ),
+                        )
+                      ],
+                    )
+                  }else ...{
+                    Center(child: Text('no video found'),)
+                  }
+                 ], 
+                )
               ],
             ),
-            Container(
-              margin: EdgeInsets.only(top: height * 0.03),
-              child: Row( 
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [ 
-
-                  if(videoStatus == false)...{
-
-                    InkWell(
-                      onTap:  (){
-                        controller.play();
-                        setState(() {
-                          videoStatus = true;
-                        });
-                      }, 
-                      child: Container( 
-                        child: Icon(
-                          Icons.play_circle_fill,
-                          color: Colors.black,
-                          size: 56,
-                        ),
-                      ),
-                    ),
-                  },
-                  if(videoStatus == true)...{
-
-                    InkWell(
-                      onTap:  (){
-                        controller.pause();
-                        setState(() {
-                          videoStatus = false;
-                        });
-                      }, 
-                      child: Container( 
-                        child: Icon(
-                          Icons.pause,
-                          color: Colors.grey.shade500,
-                          size: 56,
-                        ),
-                      ),
-                    ),
-                  }
-
-                ],
-              ),
-            )
-          },
-          if(canLoadVideo == false)...{
-            Center(
-              child: Text('Video Error'),
-            )
-          }
+          ),
         ],
-      ) 
-      // Center(
-      //   child: InkWell(
-      //     onTap: () {
-      //       if (controller.value.isPlaying) {
-      //         controller.pause();
-      //       } else {
-      //         controller.play();
-      //       }
-      //     },
-      //     child: AspectRatio(
-      //       aspectRatio: controller.value.aspectRatio,
-      //       child: VideoPlayer(controller),
-      //     ),
-      //   ),
-      // ),
+      )
     );
   }
 }

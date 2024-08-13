@@ -8,6 +8,7 @@ part 'lele_event.dart';
 class LeleBloc extends Bloc<LeleEvent, LeleState>{
   LeleBloc(): super(LeleInitState()){
     on<FetchDataLele>(_fetchDataLeleHandler);
+    on<FetchDataLeleKnn>(_fetchDataLeleKnnHandler);
     on<DeleteRiwayat>(_deleteRiwayat);
   }
 
@@ -16,7 +17,7 @@ class LeleBloc extends Bloc<LeleEvent, LeleState>{
       String baseUrl = await ConfigApp?.baseUrl()??'';
 
       Dio dio = Dio();
-      var request = await dio.get('${baseUrl}/perhitungan/show');
+      var request = await dio.get('${baseUrl}/perhitungan/show/yolo');
       List<LeleModel> response = request.data.map<LeleModel>((item) {
         return LeleModel.fromJson(item);
       }).toList();
@@ -24,6 +25,27 @@ class LeleBloc extends Bloc<LeleEvent, LeleState>{
       emit(SuccessFetchLeleData(data: response));
     } catch (e) {
       emit(ErrorFetchLeleData());
+    }
+  }
+
+  void _fetchDataLeleKnnHandler(FetchDataLeleKnn event, Emitter<LeleState> emit) async{
+    try {
+      String baseUrl = await ConfigApp?.baseUrl()??'';
+
+      Dio dio = Dio();
+      var request = await dio.get('${baseUrl}/perhitungan/show/knn');
+      print(request);
+      List<LeleModel> response = request.data.map<LeleModel>((item) {
+        return LeleModel.fromJson(item);
+      }).toList();
+      
+      emit(SuccessFetchLeleDataKnn(data: response));
+    } 
+    on DioException catch(e){
+      emit(ErrorFetchLeleDataKnn());
+    }
+    catch (e) {
+      emit(ErrorFetchLeleDataKnn());
     }
   }
 

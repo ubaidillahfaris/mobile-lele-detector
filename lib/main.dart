@@ -5,6 +5,7 @@ import 'package:object_detector_lele/Helper/SharedPreferencesHelper.dart';
 import 'package:object_detector_lele/bloc/Lele/LeleBloc.dart';
 import 'package:object_detector_lele/bloc/camera/CameraBloc.dart';
 import 'package:object_detector_lele/config.dart';
+import 'package:object_detector_lele/page/Notification.dart';
 import 'package:object_detector_lele/page/camera.dart';
 import 'package:object_detector_lele/page/informasi.dart';
 import 'package:object_detector_lele/page/riwayat_page.dart';
@@ -226,6 +227,22 @@ class _HomeWidgetState extends State<HomeWidget> {
       appBar: AppBar( 
         backgroundColor: ConfigApp.colors['primary'],
         title: Text('Peternakan Lele', style: TextStyle(color: Colors.white),),
+        actions: [ 
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => NotificationWidget(),
+                )
+              );
+            },
+            child: Container( 
+              margin: EdgeInsets.symmetric(horizontal: width * 0.05),
+              child: Icon(Icons.notifications_active,size: 28,color: Colors.white,),
+            ),
+          )
+        ],
       ),
       body: BlocProvider(
         create: (context) => leleBloc,
